@@ -38,13 +38,8 @@ double Interpolation::evaluateLinearRoll(SurveyData &dataStorage,
 	std::shared_ptr<Vector3> target)
 {
 	// --- Vectors
-	Orbital orb0{ phys::rEarth, m_t0 }, orb1{ phys::rEarth, m_t1 }; // trouble!!!
-	Vector3 s0{ orb0.getRadiusVector() };
-	Vector3 s1{ orb1.getRadiusVector() };
-	Vector3 v0{ orb0.getVelocityVector() };
-	Vector3 v1{ orb1.getVelocityVector() };
-	Vector3 n0{ s0.cross(v0) };
-	Vector3 n1{ s1.cross(v1) };
+	Vector3 n0{ m_s0.cross(m_v0) };
+	Vector3 n1{ m_s1.cross(m_v1) };
 	Vector3 p{ *target };
 	// --- normalization
 	normalizeVectors(&n0, &n1, &p);
