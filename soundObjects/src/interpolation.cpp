@@ -3,119 +3,175 @@
 #include"globalConstants.h"
 #include "..\include\interpolation.h"
 #include<cassert>
+#include<cmath>
+#include<limits>
 
-Interpolation::Interpolation(Orbital &earthOrbit,
-	Targets &targetStorage,
-	TimePoints &timeStorage,
-	std::vector<AngularCoordinates> &angVect)
+
+Interpolation::Interpolation(SurveyData &dataStorage)
 {
-	/*int tMax{defineTMax(timeStorage, targetStorage)};
-	int i{ 0 };
-	for (; i < tMax;) {
-		double time{ findTimeLinear(earthOrbit, targetStorage, timeStorage, 
-									i, i + 1, i / 2) };
-		m_timeLinear.push_back(time);
-		m_Linear.push_back(new Solution(timeStorage.getTimePointsVect().at(i),
-			timeStorage.getTimePointsVect().at(i + 1), time, angVect.at(i/2)));
-		i += 2;
-	}*/
+	m_dt = dataStorage.getTimeStorage().getTimeStep();
 }
 
-Interpolation::~Interpolation()
+double Interpolation::evaluateLinearTime(SurveyData &dataStorage, double tApprox,
+	std::shared_ptr<Vector3> target)
 {
+	std::tie(m_t0, m_t1) = dataStorage.getTimeStorage().getTwoTimesCloseTo(tApprox);
+	// --- define vectors
+	setVectors();
+	Vector3 p{ *target };
+
+	// --- define functions' values
+	double f0{ p*m_v0 };
+	double f1{ p*m_v1 };
+
+	// --- define coefficients 
+	double b{}, c{};
+	std::tie(b, c) = setCoeff_b_c(f0, f1);
+	// --- evaluate root
+	assert(std::abs(b) > std::numeric_limits<double>::epsilon() ||
+		std::abs(c) > std::numeric_limits<double>::epsilon()); //( b != 0 || c!= 0 )
+	m_tSurv = -c / b;
+	return m_tSurv;
 }
 
-int Interpolation::defineTMax(TimePoints& timeStorage, Targets& targetStorage) {
-	int targetSize{ static_cast<int>(targetStorage.getTargetsVector().size()) };
-	int timeSize{ static_cast<int>(timeStorage.getTimePointsVect().size()) };
-	assert(targetSize != (1 / 2)*timeSize);
-	if (timeSize % 2 == 0)
-		return timeSize;
-	else
-		return timeSize - 1;
+double Interpolation::evaluateLinearRoll(SurveyData &dataStorage,
+	std::shared_ptr<Vector3> target)
+{
+	// --- Vectors
+	Orbital orb0{ phys::rEarth, m_t0 }, orb1{ phys::rEarth, m_t1 }; // trouble!!!
+	Vector3 s0{ orb0.getRadiusVector() };
+	Vector3 s1{ orb1.getRadiusVector() };
+	Vector3 v0{ orb0.getVelocityVector() };
+	Vector3 v1{ orb1.getVelocityVector() };
+	Vector3 n0{ s0.cross(v0) };
+	Vector3 n1{ s1.cross(v1) };
+	Vector3 p{ *target };
+	// --- normalization
+	normalizeVectors(&n0, &n1, &p);
+	// --- define functions' values
+	double g0{ n0*p };
+	double g1{ n1*p };
+	// --- define coefficients 
+	double b{}, c{};
+	std::tie(b, c) = setCoeff_b_c(g0, g1);
+	// --- define sin and cos
+	double sinAlfSurv{ b*m_tSurv + c };
+	double cosAlfSurv{ sqrt(1 - sinAlfSurv*sinAlfSurv) };
+	// --- define rollSurv
+	double H{ phys::rOrb - phys::rEarth };
+	return atan(sinAlfSurv / (1 - cosAlfSurv + H / phys::rEarth)) * 180 / PI;
 }
 
-void Interpolation::normalizeVectors(Vector3* vect1, Vector3* vect2, Vector3* vect3) {
+double Interpolation::evaluateQuadraticTime(SurveyData &dataStorage, double tApprox,
+	std::shared_ptr<Vector3> target)
+{
+	std::tie(m_t_1, m_t0, m_t1) = dataStorage.getTimeStorage().
+		getThreeTimesCloseTo(tApprox);
+	// --- define vectors
+	setVectors();
+	Vector3 p{ *target };
+
+	// --- define functions' values
+	double f_1{ p*m_v_1 };
+	double f0{ p*m_v0 };
+	double f1{ p*m_v1 };
+
+	// --- define coefficients
+	double a{}, b{}, c{};
+	std::tie(a, b, c) = setCoeff_a_b_c(f_1, f0, f1);
+	// --- evaluate root
+	assert(std::abs(b) > std::numeric_limits<double>::epsilon()); // b != 0
+	if (std::abs(a) < std::numeric_limits<double>::epsilon()) // a = 0
+		m_tSurv = -c / b;
+	else { // a != 0
+		double D{ b*b - 4 * a*c };
+		if (b > std::numeric_limits<double>::epsilon()) // b > 0
+			m_tSurv = (-b + sqrt(D)) / 2 / a;
+		else//if (-b > std::numeric_limits<double>::epsilon()) // b < 0
+			m_tSurv = (-b - sqrt(D)) / 2 / a;
+	}
+	return m_tSurv;
+
+}
+
+double Interpolation::evaluateQuadraticRoll(SurveyData &dataStorage,
+	std::shared_ptr<Vector3> target)
+{
+	Vector3 n_1{ m_s_1.cross(m_v_1) };
+	Vector3 n0{ m_s0.cross(m_v0) };
+	Vector3 n1{ m_s1.cross(m_v1) };
+	Vector3 p{ *target };
+	// --- normalization
+	normalizeVectors(&n_1, &n0, &n1, &p);
+	// --- define functions' values
+	double g_1{ n_1*p };
+	double g0{ n0*p };
+	double g1{ n1*p };
+	// --- define coefficients 
+	double a{}, b{}, c{};
+	std::tie(a, b, c) = setCoeff_a_b_c(g_1, g0, g1);
+	// --- define sin and cos
+	double sinAlfSurv{ a*m_tSurv*m_tSurv + b*m_tSurv + c };
+	double cosAlfSurv{ sqrt(1 - sinAlfSurv*sinAlfSurv) };
+	// --- define rollSurv
+	double H{ phys::rOrb - phys::rEarth };
+	return atan(sinAlfSurv / (1 - cosAlfSurv + H / phys::rEarth)) * 180 / PI;
+}
+
+
+
+void Interpolation::normalizeVectors(Vector3* vect1, Vector3* vect2, Vector3* vect3,
+	Vector3* vect4)
+{
+	vect1->normalize();
+	vect2->normalize();
+	vect3->normalize();
+	vect4->normalize();
+}
+
+void Interpolation::normalizeVectors(Vector3* vect1, Vector3* vect2, Vector3* vect3)
+{
 	vect1->normalize();
 	vect2->normalize();
 	vect3->normalize();
 }
 
-void Interpolation::normalizeVectors(Vector3* vect1, Vector3* vect2) {
+void Interpolation::normalizeVectors(Vector3* vect1, Vector3* vect2)
+{
 	vect1->normalize();
 	vect2->normalize();
 }
 
-void Interpolation::normalizeVectors(Vector3* vect1) {
+void Interpolation::normalizeVectors(Vector3* vect1)
+{
 	vect1->normalize();
 }
 
-double Interpolation::findTimeLinear(Orbital& earthOrbit, 
-	Targets& targetStorage, 
-	TimePoints& timeStorage,
-	int iA, int iB, int iP) {
-
-	Vector3* sA{ earthOrbit.getRadVect().at(iA) };
-	Vector3* sB{ earthOrbit.getRadVect().at(iB) };
-	Vector3* p{ targetStorage.getTargetsVector().at(iP) };
-	normalizeVectors(sA, sB, p);
-
-	Vector3 normal{ sA->cross(*sB) };
-	normal.normalize();
-	p->projectOnPlane(normal);
-	p->normalize();
-
-	double tA{ timeStorage.getTimePointsVect().at(iA) };
-	double tB{ timeStorage.getTimePointsVect().at(iB) };
-
-	double sqr{ sqrt(2 * (1 - sA->operator*(*p))) };
-	double tSurv{ tA + sqr / (phys::wS - phys::wE) };
-	return tSurv;
-}
-
-double Interpolation::findLinearTime(Orbital &earthOrbit, Targets &targetStorage,
-									 TimePoints &timeStorage, double tA, 
-									 double tB, int targetIndex)
+void Interpolation::setVectors()
 {
-	Vector3* sA{ earthOrbit.getRadVectAt(tA, timeStorage) };
-	Vector3* sB{ earthOrbit.getRadVectAt(tB, timeStorage) };
-	Vector3* p{ targetStorage.getTargetsVector().at(targetIndex) };
-
-	normalizeVectors(sA, sB, p);
-
-	Vector3 normal{ sA->cross(*sB) };
-	normal.normalize();
-	p->projectOnPlane(normal);
-	p->normalize();
-
-	return tA + sqrt(2 * (1 - sA->operator*(*p)))/ (phys::wS - phys::wE);
+	Orbital orb_1{ phys::rEarth, m_t_1 };
+	Orbital orb0{ phys::rEarth, m_t0 };
+	Orbital orb1{ phys::rEarth, m_t1 };
+	m_s0 = orb0.getRadiusVector();
+	m_s1 = orb1.getRadiusVector();
+	m_v0 = orb0.getVelocityVector();
+	m_v1 = orb1.getVelocityVector();
+	m_s_1 = orb_1.getRadiusVector();
+	m_v_1 = orb_1.getVelocityVector();
 }
 
-double Interpolation::findTimeQuadratic(Orbital &earthOrbit, 
-	Targets &targetStorage, TimePoints &timeStorage, 
-	int iA, int iB, int iP)
+std::tuple<double, double> Interpolation::setCoeff_b_c(double func0, double func1)
 {
-	// --- introduce approximate time ---
-	//downloaded from file or smth like
-	double tApproximate{ 260.0 };
-
-	// --- introduce approximate time ---
-	
-	return 0.0;
+	double b{ (func1 - func0) / m_dt };
+	double c{ func1 - m_t1*b };
+	return{ b,c };
 }
 
-//timeSurvLinearInterp(double tA, double tB,
-//										   Orbit satA, Orbit satB,
-//										   SurveyObjects& point) {
-//	PointsStEndSurv pointsOfSat;
-//	estPointsStEndSurv(pointsOfSat, satA, satB, point);
-//
-//	Vector3 normal{ pointsOfSat.m_sA.cross(pointsOfSat.m_sB) };
-//	normal.normalize();
-//	pointsOfSat.m_p.projectOnPlane(normal);
-//	pointsOfSat.m_p.normalize();
-//
-//	double tSurv{ tA + sqrt(2 * (1 - pointsOfSat.m_sA*pointsOfSat.m_p))
-//		/ (phys::wS - phys::wE) };
-//	return tSurv;
-//}
+std::tuple<double, double, double> Interpolation::setCoeff_a_b_c(double func_1, double func0, double func1)
+{
+	double func1_0{ func1 - func0 }; //
+	double a{ ((func_1 - func0) + func1_0) / 2 / m_dt / m_dt };
+	double b{ func1_0 / m_dt - a*(m_t1 + m_t0) };
+	double c{ func1 - m_t1*(a*m_t1 + b) };
+	return{ a,b,c };
+}

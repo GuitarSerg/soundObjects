@@ -3,9 +3,9 @@
 
 class Calculation
 {
-	public:
-		Calculation();
-		~Calculation();
+public:
+	Calculation();
+	~Calculation();
 };
 
 #endif

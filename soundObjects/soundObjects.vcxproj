@@ -146,58 +146,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="calculationOfTimeAndRoll.h" />
-    <ClInclude Include="include\accelerationOrbit.h" />
-    <ClInclude Include="include\accelerationOrbitEarthProjection.h" />
     <ClInclude Include="include\calculation.h" />
     <ClInclude Include="include\display.h" />
     <ClInclude Include="include\globalConstants.h" />
     <ClInclude Include="include\interpolation.h" />
-    <ClInclude Include="include\interpolationSolution.h" />
-    <ClInclude Include="include\numericalSolution.h" />
-    <ClInclude Include="include\Orbit.h" />
     <ClInclude Include="include\orbital.h" />
-    <ClInclude Include="include\orbitEarthProjection.h" />
-    <ClInclude Include="include\positionVectors.h" />
-    <ClInclude Include="include\radiusVector3.h" />
-    <ClInclude Include="include\roll.h" />
-    <ClInclude Include="include\solution.h" />
-    <ClInclude Include="include\solutionLoop.h" />
-    <ClInclude Include="include\SurveyObjects.h" />
+    <ClInclude Include="include\solutionAggregation.h" />
+    <ClInclude Include="include\surveyData.h" />
     <ClInclude Include="include\targets.h" />
     <ClInclude Include="include\timePoints.h" />
     <ClInclude Include="include\vector3.h" />
-    <ClInclude Include="include\vectorConstructor.h" />
-    <ClInclude Include="include\velocityOrbit.h" />
-    <ClInclude Include="include\velocityOrbitEarthProjection.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="calculationOfTimeAndRoll.cpp" />
-    <ClCompile Include="src\accelerationOrbit.cpp" />
-    <ClCompile Include="src\accelerationOrbitEarthProjection.cpp" />
     <ClCompile Include="src\calculation.cpp" />
     <ClCompile Include="src\display.cpp" />
     <ClCompile Include="src\globalConstants.cpp" />
     <ClCompile Include="src\interpolation.cpp" />
-    <ClCompile Include="src\interpolationSolution.cpp" />
-    <ClCompile Include="src\numericalSolution.cpp" />
-    <ClCompile Include="src\Orbit.cpp" />
     <ClCompile Include="src\orbital.cpp" />
-    <ClCompile Include="src\orbitEarthProjection.cpp" />
-    <ClCompile Include="src\positionVectors.cpp" />
-    <ClCompile Include="src\radiusVector3.cpp" />
-    <ClCompile Include="src\roll.cpp" />
-    <ClCompile Include="src\solution.cpp" />
-    <ClCompile Include="src\solutionLoop.cpp" />
-    <ClCompile Include="src\SurveyObjects.cpp" />
+    <ClCompile Include="src\solutionAggregation.cpp" />
+    <ClCompile Include="src\surveyData.cpp" />
     <ClCompile Include="src\targets.cpp" />
     <ClCompile Include="src\timePoints.cpp" />
     <ClCompile Include="src\vector3.cpp" />
-    <ClCompile Include="src\vectorConstructor.cpp" />
-    <ClCompile Include="src\velocityOrbit.cpp" />
-    <ClCompile Include="src\velocityOrbitEarthProjection.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

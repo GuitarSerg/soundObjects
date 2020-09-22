@@ -14,27 +14,35 @@ namespace phys {
 	constexpr double rEarth{ 6.4e6 }; //radii of the Earth: met
 	constexpr double G{ 6.67e-11 }; //gravitational constant: met^3 / kg / sec^2
 	extern const double wE; // angular velocity of the Earth: 1/sec
-	//---- orbit properties (radii and inclination) ----
+							//---- orbit properties (radii and inclination) ----
 	constexpr double rOrb{ 6661442.58526079 }; //radii of the 90 min Orbit: met
 	constexpr double incl{ 30.0 * PI / 180.0 }; // inclination in radians
-	//---- being under survey object ----
+												//---- being under survey object ----
 	constexpr double lam{ 0.0 };
 	constexpr double phi{ 30.0 * PI / 180.0 };
 	//---- sattelite properties ----
 	extern const double wS; // angular velocity of the sat: 1/sec
-	
+
 }
 
 namespace input {
+	//---- timeVector ----
+	constexpr double T{ 5880.0 };
+	constexpr double d_t{ 30.0 };
+	//---- tApproximate ---- 
+	constexpr double tApprox{ 260.0 };
+	constexpr double tApprox2{ 280.0 };
 	//---- timeSurvey (tA, tB) ----
 	constexpr double tA{ 240.0 };
 	constexpr double tB{ 270.0 };
 	//---- orbit properties (radii and inclination) ---- (should be taken for "Kanopus" SC)
 	constexpr double rOrb{ 6661442.58526079 }; //radii of the 90 min Orbit: met
 	constexpr double incl{ 30.0 * PI / 180.0 }; // inclination in radians
-	//---- being under survey object ----
+												//---- being under survey object ----
 	constexpr double lam{ 0.0 };
 	constexpr double phi{ 30.0 * PI / 180.0 };
+	constexpr double lam2{ 0.0 };
+	constexpr double phi2{ 40.0 * PI / 180.0 };
 }
 
 #endif

@@ -27,46 +27,7 @@
     <ClInclude Include="include\vector3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Orbit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SurveyObjects.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\interpolationSolution.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\velocityOrbit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\accelerationOrbit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\numericalSolution.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\roll.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\positionVectors.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\orbitEarthProjection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\accelerationOrbitEarthProjection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\velocityOrbitEarthProjection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\timePoints.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\vectorConstructor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\radiusVector3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\orbital.h">
@@ -84,13 +45,10 @@
     <ClInclude Include="include\display.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\solution.h">
+    <ClInclude Include="include\solutionAggregation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\solutionLoop.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="calculationOfTimeAndRoll.h">
+    <ClInclude Include="include\surveyData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -104,49 +62,10 @@
     <ClCompile Include="src\globalConstants.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Orbit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\SurveyObjects.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\interpolationSolution.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\velocityOrbit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\numericalSolution.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\accelerationOrbit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\roll.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\positionVectors.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\orbitEarthProjection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\accelerationOrbitEarthProjection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\velocityOrbitEarthProjection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\timePoints.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\vectorConstructor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\radiusVector3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\orbital.cpp">
@@ -164,13 +83,10 @@
     <ClCompile Include="src\display.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\solution.cpp">
+    <ClCompile Include="src\solutionAggregation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\solutionLoop.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="calculationOfTimeAndRoll.cpp">
+    <ClCompile Include="src\surveyData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -2,10 +2,19 @@
 #include "..\include\targets.h"
 
 
-Targets::Targets(double radProbingSphere,
-				 AnglesContainer& anglesVect)
+Targets::Targets(std::vector<std::shared_ptr<Vector3>>& vectOfObjVectors)
 {
-	setRadVect(radProbingSphere, anglesVect);
+	for (auto vectIt : vectOfObjVectors) {
+		m_targetsVect.push_back(vectIt);
+		m_anglesVect.push_back({ 0,0 });
+	}
+}
+
+Targets::Targets(double radProbingSphere,
+	VectorOfAngles &anglesVect)
+{
+	m_anglesVect = anglesVect;
+	setTargetsVect(radProbingSphere, anglesVect); // angular coordinates -> vector of {x,y,z} of every obj
 }
 
 
@@ -14,20 +23,21 @@ Targets::~Targets()
 
 }
 
-void Targets::setObjectCoord(double &x, double &y, double &z,
-							 double radProbingSphere, 
-							 AngularCoordinates angles)
+void Targets::setTargetsVect(double radProbingSphere, VectorOfAngles &anglesVect)
 {
-	x = radProbingSphere * cos(angles.m_phi) * cos(angles.m_lam);
-	y = radProbingSphere * cos(angles.m_phi) * sin(angles.m_lam);
-	z = radProbingSphere * sin(angles.m_phi);
+	for (auto anglesPair : anglesVect) {
+		double x{}, y{}, z{}; //probing target's coordinates
+		setObjectCoord(x, y, z, radProbingSphere, anglesPair);
+		m_targetsVect.push_back(std::make_shared<Vector3>(x, y, z));
+		// it will delete all the objects before the vector goes out of scope
+	}
 }
 
-void Targets::setRadVect(double radProbingSphere, AnglesContainer& anglesVect)
+void Targets::setObjectCoord(double &x, double &y, double &z,
+	double radProbingSphere,
+	const AngularCoordinates &anglesPair)
 {
-	for (auto angles : anglesVect) {
-		double x, y, z; //probing target's coordinates
-		setObjectCoord(x, y, z, radProbingSphere, angles);
-		m_targetsVect.push_back(new Vector3{ x,y,z });
-	}
+	x = radProbingSphere * cos(anglesPair.m_phi) * cos(anglesPair.m_lam);
+	y = radProbingSphere * cos(anglesPair.m_phi) * sin(anglesPair.m_lam);
+	z = radProbingSphere * sin(anglesPair.m_phi);
 }
