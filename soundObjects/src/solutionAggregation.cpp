@@ -30,15 +30,20 @@ void SolutionAggregation::launchLoop(SurveyData &dataStorage)
 		// second condition placed here just for insurance, because size of timeApproximateVect = size of TargetsVect always 
 		double tApprox{ *timeIt };
 		m_mapSolutions["Linear"].push_back(
-			new SurveySolutionData{ iObj.evaluateLinearTime(dataStorage, tApprox, *targetIt),
-			iObj.evaluateLinearRoll(dataStorage, *targetIt),
-			tApprox,
-			*angVectIt });
+			SurveySolutionData{ 
+				iObj.evaluateLinearTime(dataStorage, tApprox, *targetIt),
+				iObj.evaluateLinearRoll(dataStorage, *targetIt),
+				tApprox,
+				*angVectIt }
+		);
+
 		m_mapSolutions["Quadratic"].push_back(
-			new SurveySolutionData{ iObj.evaluateQuadraticTime(dataStorage, tApprox, *targetIt),
-			iObj.evaluateQuadraticRoll(dataStorage, *targetIt),
-			tApprox,
-			*angVectIt });
+			SurveySolutionData{
+				iObj.evaluateQuadraticTime(dataStorage, tApprox, *targetIt),
+				iObj.evaluateQuadraticRoll(dataStorage, *targetIt),
+				tApprox,
+				*angVectIt }
+		);
 
 		timeIt++;
 		targetIt++;

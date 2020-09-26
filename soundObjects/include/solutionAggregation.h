@@ -19,7 +19,7 @@ struct SurveySolutionData
 class SolutionAggregation
 {
 private:
-	std::map<std::string, std::vector<SurveySolutionData*>> m_mapSolutions;
+	std::map<std::string, std::vector<SurveySolutionData>> m_mapSolutions;
 	friend class Display;
 public:
 	SolutionAggregation(SurveyData &dataStorage);

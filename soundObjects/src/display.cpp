@@ -28,19 +28,19 @@ void Display::printSolutions(SolutionAggregation &solutions)
 				<< mapIt.first << ": ";
 			std::cout.precision(m_rootPrec);
 			std::cout << "root: " << std::scientific <<
-				std::setw(m_rootWidth) << mapIt.second.at(iSol)->m_tRoot << ' ';
+				std::setw(m_rootWidth) << mapIt.second.at(iSol).m_tRoot << ' ';
 			std::cout.precision(m_rollPrec);
 			std::cout << "roll: " << std::defaultfloat <<
-				std::setw(m_rollWidth) << mapIt.second.at(iSol)->m_roll << ' ';
+				std::setw(m_rollWidth) << mapIt.second.at(iSol).m_roll << ' ';
 			std::cout.precision(m_tApprPrec);
 			std::cout << "tApp was " << std::fixed <<
-				std::setw(m_tApproxWidth) << mapIt.second.at(iSol)->m_tApprox << ' ';
+				std::setw(m_tApproxWidth) << mapIt.second.at(iSol).m_tApprox << ' ';
 			std::cout.precision(m_angularPrec);
 			std::cout << "(lam, phi): " << std::defaultfloat <<
 				std::setw(m_phiWidth) <<
-				mapIt.second.at(iSol)->m_angularCoord.m_lam * 180 / PI << ':' <<
+				mapIt.second.at(iSol).m_angularCoord.m_lam * 180 / PI << ':' <<
 				std::setw(m_lamWidth) <<
-				mapIt.second.at(iSol)->m_angularCoord.m_phi * 180 / PI <<
+				mapIt.second.at(iSol).m_angularCoord.m_phi * 180 / PI <<
 				std::endl;
 		}
 		iSol++;
@@ -52,8 +52,8 @@ void Display::setWidthsAndPrecisions()
 {
 	m_typeWidth = 9;
 
-	m_rootWidth = 10;
-	m_rootPrec = 6;
+	m_rootWidth = 14;
+	m_rootPrec = 10;
 
 	m_rollWidth = 5;
 	m_rollPrec = 3;
